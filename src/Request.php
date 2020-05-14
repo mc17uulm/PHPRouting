@@ -51,6 +51,14 @@ final class Request
      * @var array
      */
     private array $files;
+    /**
+     * @var string
+     */
+    private string $ip;
+    /**
+     * @var string
+     */
+    private string $user_agent;
 
     /**
      * Request constructor.
@@ -77,6 +85,8 @@ final class Request
             }
         }
         $this->files = $_FILES ?? [];
+        $this->ip =  $_SERVER["REMOTE_ADDR"];
+        $this->user_agent = $_SERVER["HTTP_USER_AGENT"];
     }
 
     /**
@@ -179,6 +189,30 @@ final class Request
     public function get_files(): array
     {
         return $this->files;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_ip_address() : string
+    {
+        return $this->ip;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_user_agent() : string
+    {
+        return $this->user_agent;
+    }
+
+    /**
+     * @return string
+     */
+    public function hash_user_agent() : string
+    {
+        return sha1($this->user_agent);
     }
 
     /**
