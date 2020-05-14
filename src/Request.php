@@ -53,9 +53,84 @@ final class Request
         return $parameters;
     }
 
+    /**
+     * @param array $matches
+     */
+    public function set_matches(array $matches) : void
+    {
+        $this->matches = $matches;
+    }
+
+    /**
+     * @return array
+     */
     public function get_payload() : array
     {
         return $this->payload;
+    }
+
+    /**
+     * @return string
+     */
+    public function get_uri(): string
+    {
+        return $this->uri;
+    }
+
+    /**
+     * @return HTTPRequestType
+     */
+    public function get_type(): HTTPRequestType
+    {
+        return $this->type;
+    }
+
+    /**
+     * @return mixed|string
+     */
+    public function get_content_type()
+    {
+        return $this->content_type;
+    }
+
+    /**
+     * @return array
+     */
+    public function get_parameters(): array
+    {
+        return $this->parameters;
+    }
+
+    /**
+     * @return array
+     */
+    public function get_matches(): array
+    {
+        return $this->matches;
+    }
+
+    /**
+     * @return array|false
+     */
+    public function get_headers()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @return false|string
+     */
+    public function get_body()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @return array
+     */
+    public function get_files(): array
+    {
+        return $this->files;
     }
 
     public function is_post_request() : bool

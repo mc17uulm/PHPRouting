@@ -132,6 +132,7 @@ final class Router
                 if(!is_null($base)) array_shift($matches);
 
                 $route_found = true;
+                $request->set_matches($matches);
                 $response->set_content_type($this->response_type);
                 call_user_func_array($route["function"], [$request, $response]);
             }
