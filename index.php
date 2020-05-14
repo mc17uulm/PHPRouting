@@ -9,6 +9,7 @@ use phpRouter\Response;
 $router = new Router();
 
 $router->get("/", function(Request $req, Response $res) {
+    var_dump($req->get_queries());
     $res->render("<p>running</p>");
 });
 

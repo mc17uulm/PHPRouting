@@ -4,32 +4,69 @@ namespace phpRouter;
 
 use JsonException;
 
+/**
+ * Class Request
+ * @package phpRouter
+ */
 final class Request
 {
 
+    /**
+     * @var string
+     */
     private string $uri;
+    /**
+     * @var HTTPRequestType
+     */
     private HTTPRequestType $type;
+    /**
+     * @var mixed|string
+     */
     private string $content_type;
+    /**
+     * @var array
+     */
     private array $parameters;
+    /**
+     * @var array
+     */
     private array $matches;
+    /**
+     * @var array|false
+     */
     private array $headers;
+    /**
+     * @var array<string, string>
+     */
+    private array $queries;
+    /**
+     * @var false|string
+     */
     private string $body;
+    /**
+     * @var array|mixed
+     */
     private array $payload;
+    /**
+     * @var array
+     */
     private array $files;
 
     /**
      * Request constructor.
      * @param string $uri
      * @param HTTPRequestType $type
+     * @param array<string, string> $queries
      * @throws RouterException
      */
-    public function __construct(string $uri, HTTPRequestType $type)
+    public function __construct(string $uri, HTTPRequestType $type, array $queries)
     {
         $this->uri = $uri;
         $this->type = $type;
         $this->content_type = $_SERVER["CONTENT_TYPE"] ?? "text/plain";
         $this->parameters = $this->load_parameters();
         $this->headers = apache_request_headers();
+        $this->queries = $queries;
         $this->body = file_get_contents("php://input");
         $this->payload = [];
         if($this->content_type === "application/json"){
@@ -42,6 +79,9 @@ final class Request
         $this->files = $_FILES ?? [];
     }
 
+    /**
+     * @return array
+     */
     private function load_parameters() : array
     {
         $parameters = [];
@@ -118,6 +158,14 @@ final class Request
     }
 
     /**
+     * @return array<string, string>
+     */
+    public function get_queries() : array
+    {
+        return $this->queries;
+    }
+
+    /**
      * @return false|string
      */
     public function get_body()
@@ -133,11 +181,18 @@ final class Request
         return $this->files;
     }
 
+    /**
+     * @return bool
+     */
     public function is_post_request() : bool
     {
         return $this->type->equals(HTTPRequestType::POST());
     }
 
+    /**
+     * @param string $token
+     * @return bool
+     */
     public function has_valid_csrf_token(string $token) : bool
     {
         if(isset($this->headers["csrf_token"])) {

@@ -28,6 +28,10 @@ final class Router
      */
     private HTTPRequestType $type;
     /**
+     * @var array<string, string>
+     */
+    private array $queries;
+    /**
      * @var Closure|null
      */
     private ?Closure $handle_not_found = null;
@@ -46,6 +50,13 @@ final class Router
         $this->response_type = $this->type->equals(HTTPRequestType::POST()) ? "application/json" : "text/html";
 
         $url = parse_url($_SERVER["REQUEST_URI"]);
+        $this->queries = [];
+        foreach(explode("&", $url["query"]) as $query) {
+            list($key, $value) = explode("=", $query);
+            if($key !== "" && $value !== "") {
+                array_push($this->queries, [$key => $value]);
+            }
+        }
         $this->path = "";
         $this->routes = [];
 
@@ -115,7 +126,7 @@ final class Router
     {
         $route_found = false;
 
-        $request = new Request($this->path, $this->type);
+        $request = new Request($this->path, $this->type, $this->queries);
         $response = new Response($debug);
 
         foreach($this->routes as $route)
